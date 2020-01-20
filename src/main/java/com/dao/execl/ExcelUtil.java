@@ -166,7 +166,7 @@ public class ExcelUtil {
                         Method readMethod = descriptor.getReadMethod();
                         fieldValue = readMethod.invoke(t);
                     } catch (Exception e) {
-                        throw new BusinessException("获取对象的字段值错误,class :" + t.getClass() + "; fieldName: " + field.getName());
+                        throw new ExcelException("获取对象的字段值错误,class :" + t.getClass() + "; fieldName: " + field.getName());
                     }
                     if (fieldValue != null) {
                         setCellValue(cell, fieldValue, fieldNameMap.get(field.getName()));
@@ -234,7 +234,7 @@ public class ExcelUtil {
         } else if (fieldType == String.class) {
             cell.setCellValue((String) fieldValue);
         } else {
-            throw new BusinessException("不支持的类型转换, fieldType: " + fieldType.getName());
+            throw new ExcelException("不支持的类型转换, fieldType: " + fieldType.getName());
         }
     }
 
@@ -296,7 +296,7 @@ public class ExcelUtil {
             }
             return obj;
         } catch (Exception e) {
-            throw new BusinessException("解析excel行失败", e);
+            throw new ExcelException("解析excel行失败", e);
         }
 
 
@@ -326,7 +326,7 @@ public class ExcelUtil {
         for (int i = 0; i < cellCount; i++) {
             Cell cell = row.getCell(i);
             if (!cell.getCellType().equals(CellType.STRING)) {
-                throw new BusinessException("第一行必须是字符类型");
+                throw new ExcelException("第一行必须是字符类型");
             }
             String value = cell.getStringCellValue();
             ExcelField excelField = excelFieldMap.get(value);
@@ -368,7 +368,7 @@ public class ExcelUtil {
         } else if (fieldType == String.class) {
             realCellValue = cellValue;
         } else {
-            throw new BusinessException("不支持的类型转换, fieldType: " + fieldType.getName());
+            throw new ExcelException("不支持的类型转换, fieldType: " + fieldType.getName());
         }
         return realCellValue;
     }
@@ -426,12 +426,12 @@ public class ExcelUtil {
     private static void validateExcelFieldList(List<ExcelField> excelFieldList) {
         for (ExcelField excelField : excelFieldList) {
             if (excelField.getCellIndexSort() < 0) {
-                throw new BusinessException("cellIndex不能小于0");
+                throw new ExcelException("cellIndex不能小于0");
             }
         }
         long cellNameSize = excelFieldList.stream().map(ExcelField::getCellName).distinct().count();
         if (excelFieldList.size() != cellNameSize) {
-            throw new BusinessException("存在重复的列名");
+            throw new ExcelException("存在重复的列名");
         }
     }
 
